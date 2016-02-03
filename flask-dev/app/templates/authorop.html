@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block email %}
+
+<div class="container">
+
+      <div class="starter-template">
+        <div class="row" style="height:100vh;">
+                <div class="col-md-10 col-md-offset-1">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>author</th>
+                          <th>time</th>
+                          <th>publication</th>
+                          <th>num_cited</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for val in output %}
+                        <tr>
+                          <td>{{val.author}}</td>
+                          <td>{{val.creation_date}}</td>
+                          <td>{{val.cited_id}}</td>
+                          <td>{{val.num_cited}}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                </div>
+        </div>
+      </div>
+
+    </div>
+
+{% endblock %}

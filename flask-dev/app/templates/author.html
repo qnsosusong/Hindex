@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block email %}
+<div class="container">
+
+      <div class="starter-template">
+        <div class="row" style="height:100vh;">
+                <div class="col-md-4 col-md-offset-4" style="margin-top:10vh;">
+                        <form action"emailop" method="POST">
+                                <div class="form-group text-center">
+                                        <label style="font-weight:300; font-size:36px;">Type in the author name</label>
+                                        <br /><br />
+                                        <input type="text" class="form-control" id="author" name="author" placeholder="Instein, I. ">
+
+                                        <br /><br />
+                                        <button type="submit" value="Send" name="author-container" class="btn btn-default id-submit">Submit</button>
+                                </div>
+                        </form>
+                </div>
+        </div>
+      </div>
+
+    </div>
+
+{% endblock %}
