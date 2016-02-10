@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="utf-8">
+    <title>ResearcH'dex</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="icon" type="static/image/png" href="{{url_for('static',filename='img/favicon.ico')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/bootstrap.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/font-awesome.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/animate.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/templatemo-style.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/css.css')}}">
+    <script style="" charset="UTF-8" type="text/javascript"  src="{{url_for('static',filename='js/common.js')}}"></script>
+    <script src="{{url_for('static',filename='js/jquery-1.12.0.min.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static',filename='js/floating-frame.htm')}}"></script>
+    <script src="{{url_for('static',filename='js/bootstrap.js')}}"></script>
+    <script src="{{url_for('static',filename='js/jquery_002.js')}}"></script>
+    <script src="{{url_for('static',filename='js/smoothscroll.js')}}"></script>
+    <script src="{{url_for('static',filename='js/wow.js')}}"></script>
+    <script src="{{url_for('static',filename='js/jquery.js')}}"></script>
+    <script src="{{url_for('static',filename='js/templatemo-script.js')}}"></script>
+    <script type="text/javascript">
+        function evaluateResearcher() {
+            $.getJSON('/evaluate', {
+              author: $('input[name="author"]').val()
+            },  function(data) {
+                  $("#bokeh-plot2").html(data.plotdiv2);
+                  $("#bokeh-plot1").html(data.plotdiv);
+                  $("#bokeh-plot1").find("script").each(function(i) {
+                    eval($(this).text());
+                });
+            });
+        };
+    </script>
+    {{ js_resources|indent(4)|safe }}
+
+    {{ css_resources|indent(4)|safe }}
+
+</head>
+
+<body data-spy="scroll" data-target=".navbar-collapse">
+    <!-- start navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="row">
+                <div class="navbar-header">
+                    <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon icon-bar"></span>
+                        <span class="icon icon-bar"></span>
+                        <span class="icon icon-bar"></span>
+                    </button>
+                    <a href="#" class="navbar-brand"><h3>ResearcH'dex</h3></a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="active"><a href="#home" class="smoothScroll">HOME</a></li>
+                        <li><a href="#service" class="smoothScroll">H-index</a></li>
+                        <li><a href="#contact" class="smoothScroll">ABOUT ME</a></li>
+                        <li><a href="static/doc/hindex.pdf">Documents</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- end navigation -->
+
+    <!-- start home -->
+    <section id="home" class="text-center">
+      <div class="templatemo_headerimage">
+        <div class="flexslider">
+          <ul class="slides">
+            <li class="" style="width: 100%; float: left; margin-right: -100%; opacity: 0; display: block; z-index: 1;">
+                <img draggable="false" src="{{url_for('static',filename='img/1.jpg')}}" alt="Slide 1">
+                <div class="slider-caption">
+                    <div class="templatemo_homewrapper">
+                      <h2 style="visibility: visible; animation-name: fadeInDown;" class="wow fadeInDown animated" data-wow-delay="2000">Knowlegde Is Power</h2>
+                      <h1 style="visibility: visible; animation-name: fadeInDown;" class="wow fadeInDown animated" data-wow-delay="2000">
+                        <span style="opacity: 1;" class="rotate">Metrics to measure researchers' achievement?</span>
+                    </h1>
+                    <a style="visibility: visible; animation-name: fadeInDown;" href="#service" class="smoothScroll btn btn-default wow fadeInDown animated" data-wow-delay="2000">Evaluate Researcher</a>	
+                    </div>
+                </div>
+            </li>
+            <li class="" style="width: 100%; float: left; margin-right: -100%; opacity: 0; display: block; z-index: 1;">
+                <img draggable="false" src="{{url_for('static',filename='img/2.jpg')}}" alt="Slide 2">
+                <div class="slider-caption">
+                    <div class="templatemo_homewrapper">
+                      <h2 style="visibility: visible; animation-name: fadeInDown;" class="wow fadeInDown animated" data-wow-delay="2000">Researchers Impact the World </h2>
+                      <h1 style="visibility: visible; animation-name: fadeInDown;" class="wow fadeInDown animated" data-wow-delay="2000">
+                        <span style="opacity: 1;" class="rotate">How Research Impacts Researcher?</span>
+                    </h1>
+                    <a style="visibility: visible; animation-name: fadeInDown;" href="#service" class="smoothScroll btn btn-default wow fadeInDown animated" data-wow-delay="2000">Evaluate Researcher</a>	
+                    </div>
+                </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <!-- end home -->
+    <hr>
+    <!-- start service -->
+    <section id="service">
+        <div class="container">
+            <div class="row">
+                <p class="text-center">
+                    <label style="font-weight:300; font-size:36px;">Please type in the researcher name</label>
+                </p>
+            </div>
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-6">
+                        <input type="text" class="form-control" id="author" name="author" placeholder="Einstein, A.">
+                </div>
+                <div class="col-md-2">
+                    <button onclick="evaluateResearcher();" >Submit</button>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-6" style="height: 600px;"><span id="bokeh-plot1"></div>
+                <div class="col-md-6"><span id="bokeh-plot2"></div>
+            </div>
+        </div>
+    </section>
+    <!-- end service -->
+    <hr>
+    <!-- start contact -->
+    <section id="contact" class="text-center">
+        <div class="container">
+            <div class="row">
+                <div style="visibility: hidden; animation-name: none;" class="col-md-12 wow fadeInDown" data-wow-delay="2000">
+                    <h3>Qun Song</h3>
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <p> Research Researchers' Impact </p>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+        </div>
+        <footer class="container">
+            <div style="visibility: hidden; animation-duration: 0.4s; animation-delay: 0.4s; animation-name: none;" class="col-md-12 wow fadeInUp" data-wow-duration="0.4s" data-wow-delay="0.4s">
+                <span>
+                    Copyright © Qun Song, 2016. 
+                </span>
+                <ul class="social_icon">
+                <li><a href="#" class="fa fa-facebook"></a></li>
+                    <li><a href='http://www.linkedin.com/in/qunsong' class="fa fa-linkedin"></a></li>
+                    <li><a href='https://github.com/qnsosusong/Hindex.git' class="fa fa-github"></a></li>
+                </ul>
+            </div>
+        </footer>
+    </section>
+    <!-- end contact -->
+</body>
+</html>
