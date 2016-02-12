@@ -31,6 +31,7 @@ def H_index(item):
     return h_index
 
 def aggToCassandra1a(agg):
+    # write the results of author h_hindex to table "hindex_t04"	
     from cassandra.cluster import Cluster
     if agg:
         cascluster = Cluster(['52.35.154.160', '52.89.50.90', '52.89.58.183', '52.89.60.119'])
@@ -43,6 +44,7 @@ def aggToCassandra1a(agg):
 
 
 def aggToCassandra2(agg):
+    # write the collaboration information of the first author of each publication to table 'explode_author3'
     from cassandra.cluster import Cluster
     if agg:
         cascluster = Cluster(['52.35.154.160', '52.89.50.90', '52.89.58.183', '52.89.60.119'])
@@ -56,6 +58,7 @@ def aggToCassandra2(agg):
 
 
 def aggToCassandra3(agg):
+    # write the (author, publication_list) to table 'author_pub'	
     from cassandra.cluster import Cluster
     if agg:
         cascluster = Cluster(['52.35.154.160', '52.89.50.90', '52.89.58.183', '52.89.60.119'])
@@ -70,21 +73,35 @@ def aggToCassandra3(agg):
 sc = SparkContext("spark://ip-172-31-2-40:7077", "2016_test")
 sqlContext = SQLContext(sc)
 
+# read in the simulated data and select the columns 'recid', 'authors', 'co-authors', and 'creation_date'
 df = sqlContext.read.json("hdfs://ec2-52-35-154-160.us-west-2.compute.amazonaws.com:9000/camus/topics/raw_json_real/hourly/2016/01/20/16/raw_json_real*.gz").dropna().select('recid', 'authors','co-authors','references', 'creation_date').withColumnRenamed('co-authors', 'co_authors')
+
+# explode the references list to make (recid, references) tuple. Group by 'cited_id' and count to calculate how many times one publication has been cited. 
 df_references = df.select('recid', explode('references')).withColumnRenamed('_c0','cited_id').groupBy('cited_id').count().withColumnRenamed('count','num_cited')
 
+# merge author and co_author to one list, and get the publication year as 'creation_date', and convert rdd to DataFrame 
 rdd_authors = df.rdd.map(lambda x:{'recid':x.recid, 'authors': append_author(x.authors, x.co_authors), 'creation_date': fetch_year(x.creation_date)})
 df_authors = sqlContext.createDataFrame(rdd_authors)
 
+# join df_references and df_authors with cited_id == recid.
 df_join = df_references.join(df_authors, df_references.cited_id == df_authors.recid, 'inner').drop(df_authors.recid).cache()
+
+# explode merged author
 df_explode_author = df_join.select('cited_id', 'num_cited', explode('authors'), 'creation_date').withColumnRenamed('_c0', 'author')
 
+# map each record as (x.author, {x,cited_id: x.num_cited}) and group by author to make (author, publication list) with citaion information 
 test3 = df_explode_author.rdd.map(lambda x:(x.author, {x.cited_id: x.num_cited})).reduceByKey(lambda x,y: merge_two_dicts(x, y))
+
+# calculate H-index for each author 
 test4 = test3.map(lambda x: (x[0], H_index(x[1])))
 
+# write author collaboration info to Cassandra
 df_explode_author.rdd.foreachPartition(aggToCassandra2)
 
+ # write (author, publication list) to Cassandra
 test3.foreachPartition(aggToCassandra3)
+
+# write (author, hindex) to Cassandra
 test4.foreachPartition(aggToCassandra)
 
 # Create hindex_t04, save to DB using aggToCassandra1a
