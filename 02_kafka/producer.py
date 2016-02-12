@@ -1,4 +1,4 @@
-# Kafka producer that reads the input data in a loop to push them into Kafka
+# Kafka producer that reads the real data to push them into Kafka topic "kafka_raw"
 import os
 import sys
 from kafka import KafkaClient, KeyedProducer, SimpleConsumer, SimpleProducer
@@ -13,9 +13,7 @@ def genData(topic):
     while True:
         with open(source_file) as f:
             for line in f:
-#                key = line.split(" ")[0]
                 producer.send(topic, line) 
-#	        time.sleep(0.1) 
         
         source_file.close()
 
