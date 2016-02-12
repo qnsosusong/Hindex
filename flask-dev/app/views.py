@@ -14,8 +14,6 @@ from cassandra.cluster import Cluster
 cluster = Cluster(['54.35.154.160', '52.89.50.90', '52.89.58.183', '52.89.60.119'])
 session = cluster.connect('test2')
 
-#app = flask.Flask(__name__)
-
 js_resources = JS_RESOURCES.render(
     js_raw=INLINE.js_raw,
     js_files=INLINE.js_files
@@ -28,6 +26,7 @@ css_resources = CSS_RESOURCES.render(
 
 @app.route('/api/<author>')
 def get_author_publications(author):
+	# provide the API to query on one researcher's publication
 	stmt = "SELECT * FROM explode_author3 WHERE author=%s"
 	response = session.execute(stmt, parameters=[author])
 	response_list = []
@@ -61,8 +60,8 @@ def plot_data(author):
 	h_index = response_list[0].hindex
     else:
     	h_index = 0
+    	
     # get citation data
-
     stmt = "SELECT * FROM explode_author3  WHERE author=%s"
     response = session.execute(stmt, parameters=[author])
     response_list = []
@@ -122,7 +121,8 @@ def plot_data(author):
 	    step = 220.0/n
     else:
 	    step = 1
-
+	    
+    # visualization
     for i, name in enumerate(sorted(collaborator, key=collaborator.get, reverse=True)):
         angle = i*pi*53/180 + 0.35 
         dist = 0.5 + i*2.0/n
