@@ -14,6 +14,8 @@ from cassandra.cluster import Cluster
 cluster = Cluster(['54.35.154.160', '52.89.50.90', '52.89.58.183', '52.89.60.119'])
 session = cluster.connect('test2')
 
+#app = flask.Flask(__name__)
+
 js_resources = JS_RESOURCES.render(
     js_raw=INLINE.js_raw,
     js_files=INLINE.js_files
@@ -26,7 +28,6 @@ css_resources = CSS_RESOURCES.render(
 
 @app.route('/api/<author>')
 def get_author_publications(author):
-	# provide the API, get author collaboration info from Cassandra database, table 'explode_author3'
 	stmt = "SELECT * FROM explode_author3 WHERE author=%s"
 	response = session.execute(stmt, parameters=[author])
 	response_list = []
@@ -56,8 +57,10 @@ def plot_data(author):
     response_list = []
     for val in response_h:
         response_list.append(val)
-    h_index = response_list[0].hindex
-
+    if len(response_list) > 0 :
+	h_index = response_list[0].hindex
+    else:
+    	h_index = 0
     # get citation data
 
     stmt = "SELECT * FROM explode_author3  WHERE author=%s"
@@ -84,6 +87,8 @@ def plot_data(author):
         colors[i] = '#' + hex(int(i*step)*65792+int(i*100.0/n)+155)[2:].zfill(6)
     num_cited.sort(reverse=True)
     figtitle = author.split(",")[1] + author.split(",")[0] + ": H-index = " + str(h_index)
+    if h_index == 0:
+	figtitle = " Could you please check the spelling?"
     fig = figure(title=figtitle, toolbar_location="below", tools="pan,wheel_zoom,box_zoom,reset,resize",
             plot_width=500, plot_height=500)
     fig.quad(top=num_cited, bottom=0, left=edges[:-1], right=edges[1:],fill_color=colors)
@@ -99,9 +104,15 @@ def plot_data(author):
     for val in response2:
         response2_list.append(val)
     print response2_list
-        
-    for x in response2_list:
-        collaborator[x.collaborator] = x.num_collab
+
+    stmt3 = "SELECT * FROM author_collab_2  WHERE collaborator=%s ALLOW FILTERING"
+    response3 = session.execute(stmt3, parameters=[author])
+    response3_list = []
+    for val in response3:
+        response3_list.append(val)
+    
+    for x in response3_list:
+        collaborator[x.author] = x.num_collab
           
     n = len(collaborator)
     collaborator_x, collaborator_y = np.zeros(n), np.zeros(n)
