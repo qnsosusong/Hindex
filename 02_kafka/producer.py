@@ -13,9 +13,7 @@ def genData(topic):
     while True:
         with open(source_file) as f:
             for line in f:
-#                key = line.split(" ")[0]
                 producer.send(topic, line) 
-#	        time.sleep(0.1) 
         
         source_file.close()
 
