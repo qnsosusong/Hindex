@@ -35,4 +35,4 @@ The simulated data was generated following the schema of the real dataset, and u
 One publication contains a list of references (~ 30 on average) and a list author/co-authors (~ 50 on average). The first step is to break the link between the publication and the references. Secondly count how many times one publication has been cited and then group the publications by individual authors. After the (author, publication_list) is ready, I can H-index for individual author. 
 
 ## Challenges:
-In this calculation process, I need to explode the record with first reference list and then the author list. So as the number of records increases, this quickly exceeded the memory and crashed the excutors in the cluster. Careful tuning in Spark is required to ensure a stable calculation. 
+In this calculation process, I need to explode the record with first reference list and then the author list. So as the number of records increases, the size of data increases dramatically and it quickly exceeded the memory and crashed the excutors in the cluster. Careful tuning in Spark is required to ensure a stable calculation. Adding more instances solved the memory shortage problem. 
