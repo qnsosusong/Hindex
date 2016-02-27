@@ -14,7 +14,7 @@ The web UI enables the visualization of the author's publication and collaborati
 ![Alt Text](https://github.com/qnsosusong/Hindex/blob/master/04_images/UI_query.png "service")
 
 ## Demo:
-
+[Demo video](https://youtu.be/G-QM3-CIPOE)
 
 
 ## Data pipeline
